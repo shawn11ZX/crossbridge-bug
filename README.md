@@ -39,8 +39,8 @@ CrossBridge编译后的程序，变量sDist在循环的迭代N中的值，在进
 两段有相同语义的代码会有不同的执行结果。　
 
 
-- 在代码Ａ中，minDist在两个地方被赋值(赋值１,赋值2）。
-- 在代码Ｂ中，我们先确定minDist会不会发生赋值2。如果不发生赋值２，再执行赋值1。否则赋值１最终反正会被赋值２覆盖。
+- 在代码Ａ中，minDist在两个地方被赋值(赋值1,赋值2）。
+- 在代码Ｂ中，我们先确定minDist会不会发生赋值2。如果不发生赋值2，再执行赋值1。否则赋值1最终反正会被赋值2覆盖。
 
 注：minDist和sDist没有在省略的代码中被引用。
 
@@ -49,7 +49,7 @@ CrossBridge编译后的程序，变量sDist在循环的迭代N中的值，在进
 	... // 省略的代码
 	if(FAllGrtr(vw, zero))
 	{
-		minDist = sDist;　// 赋值１
+		minDist = sDist;　// 赋值1
 		if(FAllGrtrOrEq(vr, zero))
 		{
 			return false;
@@ -93,7 +93,7 @@ CrossBridge编译后的程序，变量sDist在循环的迭代N中的值，在进
 		}
 	}
 	if(modified == false) {
-		minDist = sDist;　// 赋值１
+		minDist = sDist;　// 赋值1
 	}
 	... // 省略的代码
 
