@@ -1,0 +1,19 @@
+注意: 所有以下脱离于现象的推理都是没有经过验证的
+
+问题背景:
+      1.crossbridge是adobe把c++代码发布到avm上的编译器,avm是actionscript virtual machine的缩写
+	  llvm版本2.9 llvm-gcc版本 4.2-2.9
+	  2.我们在把nvidia开源的物理引擎physx编译到avm上，在做测试的过程中发现死循环
+	  
+	  3.加入输出后怀疑是浮点数相关的处理有问题 ，有两个浮点数(minDist和sDist)应该最终是一致的，但是跑起来不一致
+	  导致循环不能退出。bCon = FIsGrtr(minDist, sDist); bCon 始终为true
+	  
+	  4.在cygwin上用llvm-2.9 + llvm-gcc把代码编译到x86上而不是avm上运行，程序正确结束。
+	  
+	  5.经过多日的测试 发现程序经过微小改动之后 在avm上也能正常运行。不同程序在附件中
+	  
+	  program.original.cpp 是原有代码 program.corrected.cpp 是修正后的代码。
+	  
+	  推测。
+	  a.是不是和数值内部的精度转换有关系
+	  b.是不是和llvm SSA优化有关系。其中有一个变量的来源途径略复杂。

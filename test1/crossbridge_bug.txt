@@ -1,0 +1,21 @@
+目前在使用adobe的crossbridge编译器编译physx代码，现在碰到一个问题，基本可以确定是crossbridge的bug，不懂编译器，不清楚问题来源，只能描述现象：
+physx有一段实现gjk算法的函数(函数名为：_gjkRelativeRayCast)，该代码经过crossbridge编译后在特定输入下会产生死循环，
+crossbridge的编译器是在llvm-2.9,llvm-gcc-4.2基础上修改得到的，但使用原生的llvm-2.9和llvm-gcc-4.2编译相同代码产生的程序在同样输入情况下则不会出现死循环，
+目前不知道该bug的触发条件，所以还不能创建简单case来重现该问题，所以只能描述一下bug产生的表面原因，
+   physx的gjk算法实现函数_gjkRelativeRayCast用于计算两个多面体之间最短距离，该函数会不断循环调用了函数GJKCPairDoSimplex()来计算两个simplex之间最短距离(关于这部分内容稍微需要理解gjk算法)，
+每次循环GJKCPairDoSimplex()会逐渐逼近两个多面体之间的最短距离最后直至得到最短距离为止，问题出就在该循环上， 循环退出的其中一个条件是已经得到最短距离，即GJKCPairDoSimplex()返回值不改变了，
+然而不知为何，得到的最短距离在赋给某个变量后，设为minDist(该值为一个结构体FloatV，见注释1)，minDist.x的值在程序执行过程中会自发改变，简单举个例子，开始时，minDist.x==0.050668418176030627364525571465492248535156250，
+经过一段不会被执行的条件语句后，minDist.x变为了0.0506684184074401855468750，相差值很小，在float精度下是可以忽略的，即在c编译下，把0.050668418176030627364525571465492248535156250赋给float值的变量后，该变量值就是0.0506684184074401855468750。
+
+注释1 minDist结构：
+struct FloatV
+{
+	float x;
+	float padd[3];
+
+	FloatV(float _x) :x(_x)
+	{
+
+	}
+} __attribute__((aligned(16))); 
+其中FloatV只用了x
