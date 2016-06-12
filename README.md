@@ -118,3 +118,5 @@ Note: minDist And sDist is not referenced in the omitted code.
 	}
 	... // 省略的代码(Intentionally omitted)
 
+### Result
+The problem is that Crossbridge does not implement FP_ROUND (Rounding from a larger floating point type down to the precision of the destination), what it does is instead simply an assignment.
